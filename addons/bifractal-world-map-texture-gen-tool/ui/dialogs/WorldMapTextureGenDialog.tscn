@@ -1,0 +1,203 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/bifractal-world-map-texture-gen-tool/ui/dialogs/WorldMapTextureGenDialog.gd" type="Script" id=2]
+
+[node name="WorldMapTextureGenDialog" type="ConfirmationDialog"]
+visible = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1390.0
+margin_bottom = -580.0
+rect_min_size = Vector2( 250, 87.5 )
+window_title = "Generate World Map Texture"
+script = ExtResource( 2 )
+
+[node name="MainLayout" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = 464.0
+custom_constants/separation = 10
+
+[node name="Description Label" type="Label" parent="MainLayout"]
+margin_right = 514.0
+margin_bottom = 31.0
+text = "Generate a world map texture from the whole active scene. Hover over labels for more information."
+autowrap = true
+
+[node name="TopSeparator" type="HSeparator" parent="MainLayout"]
+margin_top = 41.0
+margin_right = 514.0
+margin_bottom = 45.0
+
+[node name="FormLayout" type="GridContainer" parent="MainLayout"]
+margin_top = 55.0
+margin_right = 514.0
+margin_bottom = 267.0
+custom_constants/vseparation = 8
+columns = 2
+
+[node name="MapNameLabel" type="Label" parent="MainLayout/FormLayout"]
+margin_top = 5.0
+margin_right = 255.0
+margin_bottom = 19.0
+hint_tooltip = "The map name. Leave empty to use the active scene name instead."
+mouse_filter = 1
+text = "Map Name"
+
+[node name="MapNameInput" type="LineEdit" parent="MainLayout/FormLayout"]
+margin_left = 259.0
+margin_right = 514.0
+margin_bottom = 24.0
+hint_tooltip = "We don't go to Ravenholm!"
+text = "d1_town_01"
+
+[node name="WorldSizeLabel" type="Label" parent="MainLayout/FormLayout"]
+margin_top = 37.0
+margin_right = 255.0
+margin_bottom = 51.0
+hint_tooltip = "The world size (cubic).
+"
+mouse_filter = 1
+size_flags_horizontal = 3
+text = "World Size (Units)"
+
+[node name="WorldSizeInput" type="SpinBox" parent="MainLayout/FormLayout"]
+margin_left = 259.0
+margin_top = 32.0
+margin_right = 514.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+min_value = 10.0
+max_value = 50000.0
+step = 10.0
+value = 1000.0
+
+[node name="CameraViewDistanceLabel" type="Label" parent="MainLayout/FormLayout"]
+margin_top = 69.0
+margin_right = 255.0
+margin_bottom = 83.0
+hint_tooltip = "Choose a number > \"World Size\" to extend the camera view distance or the other way around, if the value is less than the \"World Size\"."
+mouse_filter = 1
+text = "Camera View Distance (Units)"
+
+[node name="CameraViewDistanceInput" type="SpinBox" parent="MainLayout/FormLayout"]
+margin_left = 259.0
+margin_top = 64.0
+margin_right = 514.0
+margin_bottom = 88.0
+size_flags_horizontal = 3
+min_value = 10.0
+max_value = 50000.0
+value = 1000.0
+
+[node name="TextureSizeLabel" type="Label" parent="MainLayout/FormLayout"]
+margin_top = 99.0
+margin_right = 255.0
+margin_bottom = 113.0
+text = "Texture Size (Texels, Squared)"
+
+[node name="TextureSizeInput" type="OptionButton" parent="MainLayout/FormLayout"]
+margin_left = 259.0
+margin_top = 96.0
+margin_right = 514.0
+margin_bottom = 116.0
+size_flags_horizontal = 3
+text = "2048"
+items = [ "256", null, false, 0, null, "512", null, false, 1, null, "1024", null, false, 2, null, "2048", null, false, 3, null, "4096", null, false, 4, null, "8192", null, false, 5, null ]
+selected = 3
+
+[node name="GenerationModeLabel" type="Label" parent="MainLayout/FormLayout"]
+visible = false
+margin_top = 127.0
+margin_right = 255.0
+margin_bottom = 141.0
+text = "Generation Mode"
+
+[node name="GenerationModeDropdown" type="OptionButton" parent="MainLayout/FormLayout"]
+visible = false
+margin_top = 124.0
+margin_right = 255.0
+margin_bottom = 144.0
+text = "World Origin Centered"
+items = [ "World Origin Centered", null, false, 0, null, "World Origin Top Left", null, false, 1, null ]
+selected = 0
+
+[node name="OutputPathLabel" type="Label" parent="MainLayout/FormLayout"]
+margin_top = 129.0
+margin_right = 255.0
+margin_bottom = 143.0
+text = "Output Path"
+
+[node name="OutputPathLayout" type="HBoxContainer" parent="MainLayout/FormLayout"]
+margin_left = 259.0
+margin_top = 124.0
+margin_right = 514.0
+margin_bottom = 148.0
+
+[node name="OutputPathInput" type="LineEdit" parent="MainLayout/FormLayout/OutputPathLayout"]
+margin_right = 255.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "res://world_maps/"
+
+[node name="OutputPathSelectButton" type="ToolButton" parent="MainLayout/FormLayout/OutputPathLayout"]
+visible = false
+margin_left = 172.0
+margin_right = 255.0
+margin_bottom = 24.0
+text = "Select Path"
+
+[node name="AddGitignoreLabel" type="Label" parent="MainLayout/FormLayout"]
+margin_top = 161.0
+margin_right = 255.0
+margin_bottom = 175.0
+text = "Add .gitignore"
+
+[node name="AddGitignoreCheckbox" type="CheckBox" parent="MainLayout/FormLayout"]
+margin_left = 259.0
+margin_top = 156.0
+margin_right = 514.0
+margin_bottom = 180.0
+pressed = true
+
+[node name="AddGdignoreLabel" type="Label" parent="MainLayout/FormLayout"]
+margin_top = 193.0
+margin_right = 255.0
+margin_bottom = 207.0
+text = "Add .gdignore"
+
+[node name="AddGdignoreCheckbox" type="CheckBox" parent="MainLayout/FormLayout"]
+margin_left = 259.0
+margin_top = 188.0
+margin_right = 514.0
+margin_bottom = 212.0
+pressed = true
+
+[node name="ResetDefaultSettingsButton" type="Button" parent="MainLayout"]
+margin_top = 277.0
+margin_right = 514.0
+margin_bottom = 297.0
+text = "Reset Default Settings"
+
+[node name="BottomSeparator" type="HSeparator" parent="MainLayout"]
+visible = false
+margin_top = 307.0
+margin_right = 514.0
+margin_bottom = 311.0
+
+[node name="WarningLabel" type="Label" parent="MainLayout"]
+visible = false
+margin_top = 321.0
+margin_right = 514.0
+margin_bottom = 403.0
+custom_colors/font_color = Color( 0.937255, 0.764706, 0.290196, 1 )
+text = "WARNING
+
+Use large texture sizes of 4096+ squared texels with caution. The editor may freeze for a while or could crash completely. Make sure to save your current work before generating the world map texture!"
+autowrap = true
+
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]
+[connection signal="item_selected" from="MainLayout/FormLayout/TextureSizeInput" to="." method="_on_texture_size_changed"]
+[connection signal="pressed" from="MainLayout/ResetDefaultSettingsButton" to="." method="_reset_default_settings"]
