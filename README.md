@@ -2,14 +2,14 @@
 
 Generate world map textures from whole 3D scenes in Godot Engine 3.5+.
 
-**!! FRIENDLY WARNING !!**
+⚠ **FRIENDLY WARNING** ⚠
 
 This plugin is in a very early state. Please make sure to always backup your project files before performing any actions!
 
 ## Installation
-1. Close Godot editor if currently open.
+1. Close Godot Editor if currently open.
 2. Move directory "bifractal-world-map-texture-gen-tool" to your project's **addons/** folder.
-3. Re-open Godot editor, open your project and go to the **Project Settings / Plugins** tab.
+3. Re-open Godot Editor, open your project and go to the **Project Settings / Plugins** tab.
 4. Activate plugin by checking **Enable** for "World Map Texture Generation Tool".
 
 ## How-To
