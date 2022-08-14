@@ -5,48 +5,57 @@ tool
 extends ConfirmationDialog
 
 # User Interface
-var ui_map_name_input			: LineEdit		= null
-var ui_world_size_input			: SpinBox		= null
-var ui_camera_view_distance		: SpinBox		= null
-var ui_texture_size_input		: OptionButton	= null
-var ui_output_path_input		: LineEdit		= null
-var ui_add_gitignore_checkbox	: CheckBox		= null
-var ui_add_gdignore_checkbox	: CheckBox		= null
+var ui_map_name_input							: LineEdit		= null
+var ui_world_size_input							: SpinBox		= null
+var ui_camera_view_distance						: SpinBox		= null
+var ui_texture_size_input						: OptionButton	= null
+var ui_viewport_transparent_background_input	: CheckBox		= null
+var ui_output_path_input						: LineEdit		= null
+var ui_add_gitignore_checkbox					: CheckBox		= null
+var ui_add_gdignore_checkbox					: CheckBox		= null
 
+# Info UI
 var ui_bottom_separator			: HSeparator	= null
 var ui_warning_label			: Label			= null
 
+# Dialogs
+var generation_progress_dialog	: PopupDialog	= null
+
 # Nodes
-var scene 						: Spatial	= null
-var image_file_path 			: String	= ""
-var viewport 					: Viewport	= null
-var camera_timer 				: Timer		= null
-var map_name					: String	= ""
+var scene 						: Spatial		= null
+var image_file_path 			: String		= ""
+var viewport 					: Viewport		= null
+var camera_timer 				: Timer			= null
+
+# Temporary
+var map_name					: String		= ""
 
 # Settings
 const SETTINGS_FILE = "user://bifractal-world-map-gen-settings.save"
 
 var settings : Dictionary = {
-	"world_size"			: 0,
-	"camera_view_distance"	: 0,
-	"texture_size_sq"		: 0,
-	"output_path"			: "",
-	"add_gitignore"			: false,
-	"add_gdignore"			: false
+	"world_size"						: 0,
+	"camera_view_distance"				: 0,
+	"texture_size_sq"					: 0,
+	"transparent_viewport_background"	: false,
+	"output_path"						: "",
+	"add_gitignore"						: false,
+	"add_gdignore"						: false
 }
 
 # Ready
 func _enter_tree():
-	ui_map_name_input			= $MainLayout/FormLayout/MapNameInput
-	ui_world_size_input			= $MainLayout/FormLayout/WorldSizeInput
-	ui_camera_view_distance		= $MainLayout/FormLayout/CameraViewDistanceInput
-	ui_texture_size_input		= $MainLayout/FormLayout/TextureSizeInput
-	ui_output_path_input		= $MainLayout/FormLayout/OutputPathLayout/OutputPathInput
-	ui_add_gitignore_checkbox	= $MainLayout/FormLayout/AddGitignoreCheckbox
-	ui_add_gdignore_checkbox	= $MainLayout/FormLayout/AddGdignoreCheckbox
+	ui_map_name_input							= $MainLayout/FormLayout/MapNameInput
+	ui_world_size_input							= $MainLayout/FormLayout/WorldSizeInput
+	ui_camera_view_distance						= $MainLayout/FormLayout/CameraViewDistanceInput
+	ui_texture_size_input						= $MainLayout/FormLayout/TextureSizeInput
+	ui_viewport_transparent_background_input	= $MainLayout/FormLayout/ViewportTransparentBackgroundLabelCheckbox
+	ui_output_path_input						= $MainLayout/FormLayout/OutputPathLayout/OutputPathInput
+	ui_add_gitignore_checkbox					= $MainLayout/FormLayout/AddGitignoreCheckbox
+	ui_add_gdignore_checkbox					= $MainLayout/FormLayout/AddGdignoreCheckbox
 	
-	ui_bottom_separator			= $MainLayout/BottomSeparator
-	ui_warning_label			= $MainLayout/WarningLabel
+	ui_bottom_separator							= $MainLayout/BottomSeparator
+	ui_warning_label							= $MainLayout/WarningLabel
 	
 	_load_settings()
 	_toggle_warning_label()
@@ -58,9 +67,13 @@ func _enter_tree():
 func set_scene(scene : Node):
 	self.scene = scene
 	
+	# Clear previously set map name.
+	ui_map_name_input.text				= ""
+	ui_map_name_input.placeholder_text	= ""
+	
 	if (self.scene != null):
 		map_name = self.scene.name
-		ui_map_name_input.text = map_name
+		ui_map_name_input.placeholder_text = map_name
 
 # Resize Dialog
 func _resize_dialog():
@@ -75,9 +88,10 @@ func _apply_settings_from_ui():
 	
 	map_name = map_name.replace(" ", "_")
 	
-	settings.world_size = ui_world_size_input.value
-	settings.camera_view_distance = ui_camera_view_distance.value
-	settings.texture_size_sq = ui_texture_size_input.text.to_int()
+	settings.world_size							= ui_world_size_input.value
+	settings.camera_view_distance				= ui_camera_view_distance.value
+	settings.texture_size_sq					= ui_texture_size_input.text.to_int()
+	settings.transparent_viewport_background	= ui_viewport_transparent_background_input.pressed
 	
 	# TODO Future Version ...
 	#var generation_mode = $MainLayout/FormLayout/GenerationModeDropdown.selected
@@ -87,8 +101,8 @@ func _apply_settings_from_ui():
 	if (settings.output_path == ""):
 		settings.output_path = "res://world_maps/"
 	
-	settings.add_gitignore = ui_add_gitignore_checkbox.pressed
-	settings.add_gdignore = ui_add_gdignore_checkbox.pressed
+	settings.add_gitignore	= ui_add_gitignore_checkbox.pressed
+	settings.add_gdignore	= ui_add_gdignore_checkbox.pressed
 
 # Apply UI From Settings
 func _apply_ui_from_settings():
@@ -96,8 +110,8 @@ func _apply_ui_from_settings():
 	# Use the scene name as map name.
 	#ui_map_name_input.text = str(settings.map_name)
 	
-	ui_world_size_input.value			= int(settings.world_size)
-	ui_camera_view_distance.value		= int(settings.camera_view_distance)
+	ui_world_size_input.value							= int(settings.world_size)
+	ui_camera_view_distance.value						= int(settings.camera_view_distance)
 	
 	# Find index for texture size string.
 	for i in ui_texture_size_input.get_item_count():
@@ -107,13 +121,17 @@ func _apply_ui_from_settings():
 			ui_texture_size_input.selected = i
 			break
 	
-	ui_output_path_input.text			= str(settings.output_path)
-	ui_add_gitignore_checkbox.pressed	= bool(settings.add_gitignore)
-	ui_add_gdignore_checkbox.pressed	= bool(settings.add_gdignore)
+	ui_viewport_transparent_background_input.pressed	= bool(settings.transparent_viewport_background)
+	ui_output_path_input.text							= str(settings.output_path)
+	ui_add_gitignore_checkbox.pressed					= bool(settings.add_gitignore)
+	ui_add_gdignore_checkbox.pressed					= bool(settings.add_gdignore)
 
 # Generate Map
 func _generate_map():
 	print("Generating world map texture for scene \"" + scene.name + "\" ...")
+	
+	generation_progress_dialog.popup_centered()
+	generation_progress_dialog.set_progress(25)
 	
 	# Open/Create Output Directory
 	var output_dir = Directory.new()
@@ -148,11 +166,13 @@ func _generate_map():
 			warning_msg += " EC: [" + str(err) + "]."
 			push_warning(warning_msg)
 	
+	generation_progress_dialog.set_progress(50)
+	
 	# Create Viewport Node
 	viewport = Viewport.new()
 	viewport.name 						= "WORLD_MAP_GEN_VIEWPORT"
 	viewport.size 						= Vector2(settings.texture_size_sq, settings.texture_size_sq)
-	viewport.transparent_bg 			= false # TODO Make optional
+	viewport.transparent_bg 			= settings.transparent_viewport_background
 	viewport.render_target_clear_mode	= Viewport.CLEAR_MODE_NEVER
 	viewport.render_target_update_mode 	= Viewport.UPDATE_ALWAYS
 	viewport.render_target_v_flip		= true
@@ -181,6 +201,8 @@ func _generate_map():
 	
 	# Create/Start Camera Timer
 	yield(VisualServer, "frame_post_draw")
+	
+	generation_progress_dialog.set_progress(75)
 	
 	camera_timer = Timer.new()
 	camera_timer.name 		= "WORLD_MAP_GEN_CAMERA_TIMER"
@@ -232,12 +254,13 @@ func _reset_default_settings():
 	
 	# Note: The map name is applied automatically from current scene.
 	
-	settings.world_size				= 1000
-	settings.camera_view_distance	= 1000
-	settings.texture_size_sq		= 2048
-	settings.output_path			= "res://world_maps/"
-	settings.add_gitignore			= true
-	settings.add_gdignore			= true
+	settings.world_size							= 1000
+	settings.camera_view_distance				= 1000
+	settings.texture_size_sq					= 2048
+	settings.transparent_viewport_background	= false
+	settings.output_path						= "res://world_maps/"
+	settings.add_gitignore						= true
+	settings.add_gdignore						= true
 	
 	_store_settings()
 	_apply_ui_from_settings()
@@ -253,7 +276,9 @@ func _toggle_warning_label():
 # On Confirmed
 func _on_confirmed():
 	if (scene == null or !(scene is Spatial)):
-		push_warning("Could not generate world map texture from empty scene or non-Spatial scenes.")
+		var err = "Could not generate world map texture from empty scene or non-Spatial scenes."
+		push_warning(err)
+		_show_error_dialog(err)
 		return
 	
 	_apply_settings_from_ui()
@@ -266,17 +291,34 @@ func _on_camera_timer_timeout():
 	
 	print("Saving world map texture to file \"" + image_file_path + "\" ...")
 	
+	generation_progress_dialog.set_progress(75)
+	
 	var image = viewport.get_texture().get_data()
 	image.convert(Image.FORMAT_RGB8) # TODO Configurable via UI?
 	
 	var err = image.save_png(image_file_path)
 	
 	if (err != OK):
-		push_error("Could not save world map texture image. EC: [" + str(err) + "].")
+		push_error("Could not save world map texture. EC: [" + str(err) + "].")
+		generation_progress_dialog.hide()
+		_show_error_dialog("Could not save world map texture!")
+	else:
+		generation_progress_dialog.set_progress(100)
 	
 	viewport.queue_free()
 	camera_timer.queue_free()
-
+	
 # On Texture Size Changed
 func _on_texture_size_changed(index):
 	_toggle_warning_label()
+
+# Show Error Dialog
+func _show_error_dialog(message: String):
+	var error_dialog = AcceptDialog.new()
+	error_dialog.window_title	= "World Map Texture Generation Error"
+	error_dialog.dialog_text	= message
+	
+	add_child(error_dialog)
+	
+	error_dialog.connect("confirmed", error_dialog, "queue_free")
+	error_dialog.popup_centered()

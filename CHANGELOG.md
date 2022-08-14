@@ -1,5 +1,14 @@
 # World Map Texture Generation Tool - Changelog
 
+## Version v0.9.3
+### Added
+* Generation progress dialog.
+* Viewport background transparency checkbox.
+* Notification dialog on empty scenes.
+
+### Changed
+* Removed default map name. Set placeholder to current scene name instead.
+
 ## Version v0.9.2
 ### Changed
 * Set Viewport background to be non-transparent to fix image glitches.

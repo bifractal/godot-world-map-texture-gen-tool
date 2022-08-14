@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/bifractal-world-map-texture-gen-tool/ui/dialogs/GenerationProgressDialog.gd" type="Script" id=1]
+
+[node name="GenerationProgressDialog" type="PopupDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1520.0
+margin_bottom = -950.0
+size_flags_horizontal = 9
+size_flags_vertical = 9
+script = ExtResource( 1 )
+
+[node name="MainLayout" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -20.0
+custom_constants/separation = 20
+
+[node name="MessageLabel" type="Label" parent="MainLayout"]
+margin_right = 360.0
+margin_bottom = 14.0
+text = "Generating world map texture ..."
+
+[node name="FinishLabel" type="Label" parent="MainLayout"]
+visible = false
+margin_top = 34.0
+margin_right = 360.0
+margin_bottom = 48.0
+text = "World map texture generation finished!"
+
+[node name="ProgressBar" type="ProgressBar" parent="MainLayout"]
+margin_top = 34.0
+margin_right = 360.0
+margin_bottom = 48.0
+step = 1.0
+
+[node name="OKButton" type="Button" parent="MainLayout"]
+visible = false
+margin_left = 164.0
+margin_top = 68.0
+margin_right = 195.0
+margin_bottom = 88.0
+size_flags_horizontal = 4
+text = "OK"
+icon_align = 1
+
+[connection signal="pressed" from="MainLayout/OKButton" to="." method="hide"]
