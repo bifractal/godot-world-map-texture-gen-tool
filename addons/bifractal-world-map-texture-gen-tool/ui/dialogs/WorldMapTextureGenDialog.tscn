@@ -3,11 +3,10 @@
 [ext_resource path="res://addons/bifractal-world-map-texture-gen-tool/ui/dialogs/WorldMapTextureGenDialog.gd" type="Script" id=2]
 
 [node name="WorldMapTextureGenDialog" type="ConfirmationDialog"]
-visible = true
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -1390.0
-margin_bottom = -580.0
+margin_right = -1270.0
+margin_bottom = -560.0
 rect_min_size = Vector2( 250, 87.5 )
 window_title = "Generate World Map Texture"
 script = ExtResource( 2 )
@@ -17,7 +16,7 @@ anchor_right = 1.0
 margin_left = 8.0
 margin_top = 8.0
 margin_right = -8.0
-margin_bottom = 464.0
+margin_bottom = 484.0
 custom_constants/separation = 10
 
 [node name="Description Label" type="Label" parent="MainLayout"]
@@ -44,13 +43,14 @@ margin_right = 255.0
 margin_bottom = 19.0
 hint_tooltip = "The map name. Leave empty to use the active scene name instead."
 mouse_filter = 1
-text = "Map Name"
+text = "Map Name *"
 
 [node name="MapNameInput" type="LineEdit" parent="MainLayout/FormLayout"]
 margin_left = 259.0
 margin_right = 514.0
 margin_bottom = 24.0
 hint_tooltip = "We don't go to Ravenholm!"
+size_flags_vertical = 0
 text = "d1_town_01"
 
 [node name="WorldSizeLabel" type="Label" parent="MainLayout/FormLayout"]
@@ -69,6 +69,7 @@ margin_top = 32.0
 margin_right = 514.0
 margin_bottom = 56.0
 size_flags_horizontal = 3
+size_flags_vertical = 0
 min_value = 10.0
 max_value = 50000.0
 step = 10.0
@@ -88,6 +89,7 @@ margin_top = 64.0
 margin_right = 514.0
 margin_bottom = 88.0
 size_flags_horizontal = 3
+size_flags_vertical = 0
 min_value = 10.0
 max_value = 50000.0
 value = 1000.0
@@ -104,6 +106,7 @@ margin_top = 96.0
 margin_right = 514.0
 margin_bottom = 116.0
 size_flags_horizontal = 3
+size_flags_vertical = 0
 text = "2048"
 items = [ "256", null, false, 0, null, "512", null, false, 1, null, "1024", null, false, 2, null, "2048", null, false, 3, null, "4096", null, false, 4, null, "8192", null, false, 5, null ]
 selected = 3
@@ -140,6 +143,7 @@ margin_bottom = 148.0
 margin_right = 255.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
+size_flags_vertical = 0
 text = "res://world_maps/"
 
 [node name="OutputPathSelectButton" type="ToolButton" parent="MainLayout/FormLayout/OutputPathLayout"]
@@ -160,6 +164,7 @@ margin_left = 259.0
 margin_top = 156.0
 margin_right = 514.0
 margin_bottom = 180.0
+size_flags_vertical = 0
 pressed = true
 
 [node name="AddGdignoreLabel" type="Label" parent="MainLayout/FormLayout"]
@@ -173,25 +178,34 @@ margin_left = 259.0
 margin_top = 188.0
 margin_right = 514.0
 margin_bottom = 212.0
+size_flags_vertical = 0
 pressed = true
 
-[node name="ResetDefaultSettingsButton" type="Button" parent="MainLayout"]
+[node name="Label" type="Label" parent="MainLayout"]
 margin_top = 277.0
 margin_right = 514.0
-margin_bottom = 297.0
+margin_bottom = 291.0
+custom_colors/font_color = Color( 0.588235, 0.588235, 0.588235, 1 )
+text = "* The map name is applied automatically when switching scenes in editor!"
+autowrap = true
+
+[node name="ResetDefaultSettingsButton" type="Button" parent="MainLayout"]
+margin_top = 301.0
+margin_right = 514.0
+margin_bottom = 321.0
 text = "Reset Default Settings"
 
 [node name="BottomSeparator" type="HSeparator" parent="MainLayout"]
 visible = false
-margin_top = 307.0
+margin_top = 331.0
 margin_right = 514.0
-margin_bottom = 311.0
+margin_bottom = 335.0
 
 [node name="WarningLabel" type="Label" parent="MainLayout"]
 visible = false
-margin_top = 321.0
+margin_top = 345.0
 margin_right = 514.0
-margin_bottom = 403.0
+margin_bottom = 427.0
 custom_colors/font_color = Color( 0.937255, 0.764706, 0.290196, 1 )
 text = "WARNING
 

@@ -25,6 +25,9 @@ func _enter_tree():
 	world_map_texture_gen_button.connect("pressed", world_map_texture_gen_dialog, "popup_centered")
 	add_control_to_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_MENU, world_map_texture_gen_button)
 	
+	var edited_scene = editor_interface.get_tree().get_edited_scene_root()
+	world_map_texture_gen_dialog.set_scene(edited_scene)
+	
 	connect("scene_changed", self, "_on_scene_changed")
 
 # Exit Tree
@@ -34,4 +37,4 @@ func _exit_tree():
 
 # On Scene Changed
 func _on_scene_changed(scene : Node):
-	world_map_texture_gen_dialog.scene = scene
+	world_map_texture_gen_dialog.set_scene(scene)

@@ -8,9 +8,9 @@ This plugin is in a very early state. Please make sure to always backup your pro
 
 ## Installation
 1. Close Godot Editor if currently open.
-2. Move directory "bifractal-world-map-texture-gen-tool" to your project's **addons/** folder.
+2. Move directory **bifractal-world-map-texture-gen-tool** to your project's **addons/** folder.
 3. Re-open Godot Editor, open your project and go to the **Project Settings / Plugins** tab.
-4. Activate plugin by checking **Enable** for "World Map Texture Generation Tool".
+4. Activate plugin by checking **Enable** for **World Map Texture Generation Tool**.
 
 ## How-To
 1. Open any Spatial scene and look for the **Generate World Map** button in the upper toolbar.
@@ -34,9 +34,9 @@ If everything went fine, you can find the map texture inside the given output pa
 Since the texture is generated from a very high "altitude", the quality of meshes might be low due to low levels of detail. This issue may be fixed by using "tiled maps" in a future version. See [Future Versions](#future-versions) for more information.
 
 ## Known Issues
-No known issues yet. Always check the log for warnings. In doubt, re-open a scene or the editor completely and try again. Feel free to open an issue on GitHub if you run into any problems.
+No known issues yet. Always check the output log for warnings and errors. In doubt, re-open a scene or the editor completely and try again. Feel free to open an issue on GitHub if you run into any problems.
 
 ## Future Versions
-See TODO.md for detailed feature descriptions for future versions.
+See [TODO.md](TODO.md) for detailed feature descriptions for future versions.
 
 Thanks for using my software 💜

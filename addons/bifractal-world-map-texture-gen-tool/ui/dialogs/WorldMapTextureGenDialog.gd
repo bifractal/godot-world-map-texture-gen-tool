@@ -17,16 +17,16 @@ var ui_bottom_separator			: HSeparator	= null
 var ui_warning_label			: Label			= null
 
 # Nodes
-var scene 				: Spatial	= null
-var image_file_path 	: String	= ""
-var viewport 			: Viewport	= null
-var camera_timer 		: Timer		= null
+var scene 						: Spatial	= null
+var image_file_path 			: String	= ""
+var viewport 					: Viewport	= null
+var camera_timer 				: Timer		= null
+var map_name					: String	= ""
 
 # Settings
 const SETTINGS_FILE = "user://bifractal-world-map-gen-settings.save"
 
 var settings : Dictionary = {
-	"map_name"				: "",
 	"world_size"			: 0,
 	"camera_view_distance"	: 0,
 	"texture_size_sq"		: 0,
@@ -52,13 +52,28 @@ func _enter_tree():
 	_toggle_warning_label()
 	
 	# Force Default Size
-	rect_size = Vector2(530.0, 500.0)
+	_resize_dialog()
+
+# Set Scene
+func set_scene(scene : Node):
+	self.scene = scene
+	
+	if (self.scene != null):
+		map_name = self.scene.name
+		ui_map_name_input.text = map_name
+
+# Resize Dialog
+func _resize_dialog():
+	rect_size = Vector2(650.0, 520.0)
 
 # Apply Settings From UI
 func _apply_settings_from_ui():
-	settings.map_name = ui_map_name_input.text
-	if (settings.map_name == ""): settings.map_name = scene.name
-	settings.map_name = settings.map_name.replace(" ", "_")
+	map_name = ui_map_name_input.text
+	
+	if (map_name == ""):
+		map_name = scene.name
+	
+	map_name = map_name.replace(" ", "_")
 	
 	settings.world_size = ui_world_size_input.value
 	settings.camera_view_distance = ui_camera_view_distance.value
@@ -68,17 +83,30 @@ func _apply_settings_from_ui():
 	#var generation_mode = $MainLayout/FormLayout/GenerationModeDropdown.selected
 	
 	settings.output_path = ui_output_path_input.text
-	if (settings.output_path == ""): settings.output_path = "res://world_maps/"
+	
+	if (settings.output_path == ""):
+		settings.output_path = "res://world_maps/"
 	
 	settings.add_gitignore = ui_add_gitignore_checkbox.pressed
 	settings.add_gdignore = ui_add_gdignore_checkbox.pressed
 
 # Apply UI From Settings
 func _apply_ui_from_settings():
-	ui_map_name_input.text				= str(settings.map_name)
+	
+	# Use the scene name as map name.
+	#ui_map_name_input.text = str(settings.map_name)
+	
 	ui_world_size_input.value			= int(settings.world_size)
 	ui_camera_view_distance.value		= int(settings.camera_view_distance)
-	ui_texture_size_input.text			= str(settings.texture_size_sq)
+	
+	# Find index for texture size string.
+	for i in ui_texture_size_input.get_item_count():
+		var item_text = ui_texture_size_input.get_item_text(i)
+		
+		if (item_text == str(settings.texture_size_sq)):
+			ui_texture_size_input.selected = i
+			break
+	
 	ui_output_path_input.text			= str(settings.output_path)
 	ui_add_gitignore_checkbox.pressed	= bool(settings.add_gitignore)
 	ui_add_gdignore_checkbox.pressed	= bool(settings.add_gdignore)
@@ -92,27 +120,33 @@ func _generate_map():
 	
 	if (output_dir.open(settings.output_path) != OK):
 		if (output_dir.make_dir(settings.output_path) != OK):
-			push_warning("Could not open or create ouput directory for world map texture generation.")
+			push_error("Could not open or create ouput directory for world map texture generation.")
 			return
 	
 	# Add .gitignore?
 	if (settings.add_gitignore):
 		var file_gitignore = File.new()
+		var err = file_gitignore.open(settings.output_path + "/" + ".gitignore", File.WRITE)
 		
-		if (file_gitignore.open(settings.output_path + "/" + ".gitignore", File.WRITE) == OK):
+		if (err == OK):
 			file_gitignore.store_string("*.png\n");
 			file_gitignore.close()
 		else:
-			push_warning("Could not create .gitignore file inside world map texture output directory.")
+			var warning_msg = "Could not create .gitignore file inside world map texture output directory."
+			warning_msg += " EC: [" + str(err) + "]."
+			push_warning(warning_msg)
 			
 	# Add .gdignore?
 	if (settings.add_gdignore):
 		var file_gdignore = File.new()
+		var err = file_gdignore.open(settings.output_path + "/" + ".gdignore", File.WRITE)
 		
-		if (file_gdignore.open(settings.output_path + "/" + ".gdignore", File.WRITE) == OK):
+		if (err == OK):
 			file_gdignore.close()
 		else:
-			push_warning("Could not create .gitignore file inside world map texture output directory.")
+			var warning_msg = "Could not create .gitignore file inside world map texture output directory."
+			warning_msg += " EC: [" + str(err) + "]."
+			push_warning(warning_msg)
 	
 	# Create Viewport Node
 	viewport = Viewport.new()
@@ -162,9 +196,10 @@ func _generate_map():
 # Store Settings
 func _store_settings():
 	var file = File.new()
+	var err = file.open(SETTINGS_FILE, File.WRITE)
 	
-	if (file.open(SETTINGS_FILE, File.WRITE) != OK):
-		push_warning("Could not store world map generator settings.")
+	if (err != OK):
+		push_error("Could not store world map generator settings. EC: [" + str(err) + "].")
 		return
 	
 	file.store_string(to_json(settings))
@@ -174,6 +209,7 @@ func _store_settings():
 func _load_settings():
 	var file = File.new()
 	
+	# There are no settings available initially.
 	if (file.open(SETTINGS_FILE, File.READ) != OK):
 		#push_warning("Could not load world map generator settings.")
 		return
@@ -194,7 +230,8 @@ func _reset_default_settings():
 	
 	# !!! Synchronize with UI !!!
 	
-	settings.map_name				= "d1_town_01"
+	# Note: The map name is applied automatically from current scene.
+	
 	settings.world_size				= 1000
 	settings.camera_view_distance	= 1000
 	settings.texture_size_sq		= 2048
@@ -211,12 +248,12 @@ func _toggle_warning_label():
 	var warning_visible = int(ui_texture_size_input.text) >= 4096
 	ui_bottom_separator.visible = warning_visible
 	ui_warning_label.visible = warning_visible
-	rect_size = Vector2(530.0, 520.0)
+	_resize_dialog()
 
 # On Confirmed
 func _on_confirmed():
 	if (scene == null or !(scene is Spatial)):
-		push_warning("Could not generate world map texture from null scene or non-Spatial scenes.")
+		push_warning("Could not generate world map texture from empty scene or non-Spatial scenes.")
 		return
 	
 	_apply_settings_from_ui()
@@ -225,13 +262,17 @@ func _on_confirmed():
 
 # On Camera Timer Timeout
 func _on_camera_timer_timeout():
-	image_file_path = settings.output_path + "/" + settings.map_name + ".png"
+	image_file_path = settings.output_path + "/" + map_name + ".png"
 	
 	print("Saving world map texture to file \"" + image_file_path + "\" ...")
 	
 	var image = viewport.get_texture().get_data()
-	image.convert(Image.FORMAT_RGB8) # TODO Selectable via UI?
-	image.save_png(image_file_path)
+	image.convert(Image.FORMAT_RGB8) # TODO Configurable via UI?
+	
+	var err = image.save_png(image_file_path)
+	
+	if (err != OK):
+		push_error("Could not save world map texture image. EC: [" + str(err) + "].")
 	
 	viewport.queue_free()
 	camera_timer.queue_free()
