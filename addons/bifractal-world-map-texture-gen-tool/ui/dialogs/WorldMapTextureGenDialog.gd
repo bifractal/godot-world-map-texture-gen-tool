@@ -152,7 +152,7 @@ func _generate_map():
 	viewport = Viewport.new()
 	viewport.name 						= "WORLD_MAP_GEN_VIEWPORT"
 	viewport.size 						= Vector2(settings.texture_size_sq, settings.texture_size_sq)
-	viewport.transparent_bg 			= true # TODO Make optional
+	viewport.transparent_bg 			= false # TODO Make optional
 	viewport.render_target_clear_mode	= Viewport.CLEAR_MODE_NEVER
 	viewport.render_target_update_mode 	= Viewport.UPDATE_ALWAYS
 	viewport.render_target_v_flip		= true

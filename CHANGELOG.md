@@ -1,5 +1,9 @@
 # World Map Texture Generation Tool - Changelog
 
+## Version v0.9.2
+### Changed
+* Set Viewport background to be non-transparent to fix image glitches.
+
 ## Version v0.9.1
 ### Changed
 * Use the current scene name as default map name.
