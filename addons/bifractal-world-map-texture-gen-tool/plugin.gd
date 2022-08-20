@@ -4,9 +4,9 @@
 tool
 extends EditorPlugin
 
-const GenerationProgressDialog = preload("res://addons/bifractal-world-map-texture-gen-tool/ui/dialogs/GenerationProgressDialog.tscn")
-const WorldMapTextureGenDialog = preload("res://addons/bifractal-world-map-texture-gen-tool/ui/dialogs/WorldMapTextureGenDialog.tscn")
-const WorldMapTextureGenButton = preload("res://addons/bifractal-world-map-texture-gen-tool/ui/WorldMapTextureGenButton.tscn")
+const GenerationProgressDialog = preload("ui/dialogs/GenerationProgressDialog.tscn")
+const WorldMapTextureGenDialog = preload("ui/dialogs/WorldMapTextureGenDialog.tscn")
+const WorldMapTextureGenButton = preload("ui/WorldMapTextureGenButton.tscn")
 
 var editor_interface				: EditorInterface		= null
 var generation_progress_dialog		: PopupDialog			= null

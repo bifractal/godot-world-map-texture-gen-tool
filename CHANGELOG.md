@@ -1,5 +1,9 @@
 # World Map Texture Generation Tool - Changelog
 
+## Version v0.9.4
+### Fixed
+* Depth resoultion by increasing camera's near value.
+
 ## Version v0.9.3
 ### Added
 * Generation progress dialog.

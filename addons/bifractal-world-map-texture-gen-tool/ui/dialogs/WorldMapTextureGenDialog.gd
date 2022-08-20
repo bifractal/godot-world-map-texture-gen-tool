@@ -190,6 +190,7 @@ func _generate_map():
 	camera.name 			= "WORLD_MAP_GEN_CAMERA"
 	camera.projection 		= Camera.PROJECTION_ORTHOGONAL
 	camera.size 			= settings.world_size
+	camera.near				= 1.0 # Choose large number to avoid depth flickering.
 	camera.far 				= settings.camera_view_distance
 	camera.translation.y 	= settings.world_size
 	camera.rotation.x 		= deg2rad(-90.0)
@@ -236,6 +237,7 @@ func _load_settings():
 		#push_warning("Could not load world map generator settings.")
 		return
 	
+	# TODO Works only with single line file ...
 	while (file.get_position() < file.get_len()):
 		var line = file.get_line()
 		settings = parse_json(line)
